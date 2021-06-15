@@ -10,6 +10,8 @@ Este proyecto es un análisis de sentimientos de las vacunas del Coronavirus en 
 
 La mayoría del código se ha migrado a notebooks para poder visualizar en línea los aspectos más importantes del proyecto, sin tener que ejecutar el código. Así, en este documento se hace referencia a partes concretas de él para poder seguir los contenidos del proyecto, así como para ver los resultados y visualizaciones.
 
+**Nota:** si se ejecuta parte del código, el directorio de trabajo puede no ser de entrada el correcto, por lo que habría que cambiar el directorio de trabajo a la carpeta principal del proyecto, o corregir las direcciones.
+
 ## 1. Scraping
 
 Para la recuperación de los datos se ha hecho uso de la biblioteca _snscrape_. La dificultad en este apartado radica en la dificultad para encontrar la herramienta adecuada.
@@ -40,13 +42,13 @@ Como el volumen de tweets seguía siendo considerable, se ha empleado una herram
 
 #### 2.2.1. En inglés
 
-La limpieza de los datos traducidos al inglés se encuentra en el script [clean_english.ipynb](preprocessing/clean_english.ipynb). Este script se basa en el script [preprocessing_es_cat](preprocessing/preprocessing_es_cat.py), con la particularidad de que en este caso se ha optado por usar la librería SpaCy para lematizar el texto en inglés.
+La limpieza de los datos traducidos al inglés se encuentra en el script [clean_english.ipynb](preprocessing/clean_english.ipynb). Este script se basa en el script [preprocessing_es_cat.py](preprocessing/preprocessing_es_cat.py), con la particularidad de que en este caso se ha optado por usar la librería SpaCy para lematizar el texto en inglés.
 
 Los datos traducidos al inglés se han usado para crear el clasificador, del que se habla en la última sección de este documento.
 
 #### 2.2.2. En castellano y catalán
 
-La limpieza de los datos sin traducir se encuentra en el script [preprocessing_es_cat](preprocessing/preprocessing_es_cat.py).
+La limpieza de los datos sin traducir se encuentra en el script [preprocessing_es_cat.py](preprocessing/preprocessing_es_cat.py).
 
 Los puntos que se han seguido para la limpieza son los siguientes:
 - Para tratar los emoticonos se han seguido tres pasos:
@@ -67,7 +69,7 @@ El análisis exploratorio se divide en dos archivos:
 
 ### 3.1.1 Características básicas
 
-En el notebookk [exploratory.ipynb](exploratory/exploratory.ipynb) se analizan las características del dataset recuperado por scraping.
+En el notebook [exploratory.ipynb](exploratory/exploratory.ipynb) se analizan las características del dataset recuperado por scraping.
 
 ### 3.1.2. Nubes de palabras y aprendizaje no supervisado
 
