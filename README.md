@@ -73,7 +73,7 @@ En el notebookk [exploratory.ipynb](exploratory/exploratory.ipynb) se analizan l
 
 En el notebook [words_unsupervised.ipynb](exploratory/words_unsupervised.ipynb) se han estudiado las palabras y bigramas más frecuentes de los tweets preprocesados. Se han obtenido los gráficos de la frecuencia de cada término.
 
-Para intentar una primera clasificación, se han intentado encontrar los tópicos de los tweets mediante LDA con la biblioteca gensim y más tarde en TruncatedSVD. Como este no era el objetivo del proyecto y exigía demasiado trabajo, en el notebook se plantea un código donde más adelante se podría trabajar más a fondo.
+Para intentar una primera clasificación, se han intentado encontrar los tópicos de los tweets mediante LDA (con las bibliotecas _gensim_ y _PyLDAvis_) con la biblioteca gensim y más tarde mediante TruncatedSVD (usando _UMAP_ para las visualizaciones). Como este no era el objetivo del proyecto y exigía demasiado trabajo, en el notebook se plantea un código donde más adelante se podría trabajar más a fondo.
 
 ### 3.2 Similaridad
 
@@ -196,5 +196,5 @@ Primero se ha intentado realizar un clasificador con las tres categorías. Se ha
 La manera de abordarlo fue creando un clasificador que fuera capaz de discernir entre neutrales (la clase mayoritaria) y positivos y negativos. Después, elaborar un clasificador solo para positivos y negativos que discerniera entre estos dos. El problema de este acercamiento ha sido el desbalanceo. Debido al gran volumen de tweets neutrales, una proporción relativamente pequeña de los tweets neutrales que se identifiquen erróneamente como positivos o negativos, pasarían al segundo clasificador, en el que entrarían más tweets neutrales que positivos y negativos. Además, la precisión del clasificador no fue lo suficientemente satisfactoria.
 
 
-Anna Senent Juliá
+Anna Senent Julián
 Martí Fernández Saboya
