@@ -77,7 +77,7 @@ Para intentar una primera clasificación, se han intentado encontrar los tópico
 
 ### 3.2 Similaridad
 
-En el notebook [explore_similarities.ipynb](exploratory/explore_similarities.ipynb) se ha usado el package Word2Vec de la librería Gensim para explorar las relaciones semánticas entre las palabras. El archivo utilizado para entrenar el modelo es el dataset de los 100 _retweets_ traducido y limpio (vacunes_100rt_en_clean.csv). El objetivo es observar asociaciones que se han aprendido a partir de los datos. Podemos encontrar:
+En el notebook [explore_similarities.ipynb](exploratory/explore_similarities.ipynb) se ha usado el package Word2Vec de la biblioteca gensim para explorar las relaciones semánticas entre las palabras. El archivo utilizado para entrenar el modelo es el dataset de los 100 _retweets_ traducido y limpio (vacunes_100rt_en_clean.csv). El objetivo es observar asociaciones que se han aprendido a partir de los datos. Podemos encontrar:
 
 - Cuáles son las palabras más similares a una palabra concreta.
 - El grado de similaridad entre dos palabras.
@@ -143,20 +143,20 @@ El tercero ha arrojado unos datos realmente malos y desbalanceados, por lo que s
 
 #### 5.2.1. Discusión
 
-En el script [comparing_textblob.ipynb](classifier/comparing_textblob.ipynb) se puede ver como TextBlob es mejor detectando tweets positivos (que tienen la etiqueta 2), y bastante malo detectando tweets negativos (que tienen la etiqueta 1). Así, solo fue capaz de identificar como negativos un 17% de los tweets negativos, pero un 50% de los tweets positivos fueron etiquetados correctamente. Es importante notar que tiene poca pretensión a categorizar cualquier tweet como negativo cuando se equivoca. Los suele categorizar como positivo o neutral. Según estos resultados, se puede ver como polariza los resultados hacia etiquetas positivas (sobretodo) y neutrales.
+En el script [comparing_textblob.ipynb](classifier/comparing_textblob.ipynb) se puede ver como TextBlob es mejor detectando tweets positivos (que tienen la etiqueta 2), y bastante malo detectando tweets negativos (que tienen la etiqueta 1). Así, solo fue capaz de identificar como negativos un 17% de los tweets negativos, pero un 50% de los tweets positivos fueron etiquetados correctamente. Es importante notar que tiene poca pretensión a categorizar cualquier tweet como negativo cuando se equivoca. Los suele categorizar como positivo o neutral. Según estos resultados, se puede ver cómo polariza los resultados hacia etiquetas positivas (sobre todo) y neutrales.
 
-Por otra parte, en el mismo script, se puede ver que con VADER el clasificador funciona mejor en términos relativos. Es un poco más equilibrado pese a tener una menor accuracy (a causa de que predice peor los neutrales). En este caso, sigue predeciendo igual de bien los positivos pero cuando se equivoca lo hace de forma más equilibrada. Si que es cierto que le cuesta más decir que un tweet es neutral, pero no es tan grave que con el caso de TextBlob. Para nuestro caso, se considera este clasificador más fiable por resultar más equilibrado, aunque sí que es cierto que sigue polarizando parcialmente la muestra hacia los dos extremos.
+Por otra parte, en el mismo script se puede ver que con VADER el clasificador funciona mejor en términos relativos. Es un poco más equilibrado pese a tener una menor accuracy (a causa de que predice peor los neutrales). En este caso, sigue predeciendo igual de bien los positivos pero cuando se equivoca lo hace de forma más equilibrada. Sí que es cierto que le cuesta más decir que un tweet es neutral, pero no es tan grave que con el caso de TextBlob. Para nuestro caso, se considera este clasificador más fiable por resultar más equilibrado, aunque sí que es cierto que sigue polarizando parcialmente la muestra hacia los dos extremos.
 
 Finalmente, se ha hecho la media aritmética de los dos clasificadores. El resultado no ha sido mejor que los anteriores, por lo que se desestima en esta discusión.
 
 Una vez estudiados los dos clasificadores, se ha llegado a las siguientes conclusiones:
 - Para este proyecto, se considera VADER como el mejor clasificador precompilado.
-- Viendo las carencias de cada clasificador, se entiende por qué TextBlob detectaba pocas fluctuaciones en los tweets positivos (en mayor medida) y los neutrales y una subida menos perceptible que en el caso de VADER. En el caso de VADER, es entiende lo contrario: se predicen mejor los negativos aunque aún mejor los positivos. Sin embargo, tendirá a polarizar las muestras en positivos y negativos pues detecta bastante mal los neutrales.
+- Viendo las carencias de cada clasificador, se entiende por qué TextBlob detectaba pocas fluctuaciones en los tweets positivos (en mayor medida) y los neutrales y una subida menos perceptible que en el caso de VADER. En el caso de VADER, es entiende lo contrario: se predicen mejor los negativos aunque aún mejor los positivos. Sin embargo, tenderá a polarizar las muestras en positivos y negativos pues detecta bastante mal los neutrales.
 - Siguiendo a lo anterior, aunque VADER tiende a polarizar las muestras, parece que las polarizará más sobre lo positivo que lo negativo. Esto quiere decir que, según Vader, igual que con TextBlob, hay una tendencia a inflar más los tweets positivos, y, por lo tanto, este aumento del 10% se puede tener en cuenta como real.
 - El hecho que el clasificador de Textblob, que subestimaba los tweets negativos, haya detectado una subida de los tweets negativos aunque sea ligera, significa que esta percepción puede ser considerada como real.
 - Esta gran divergencia entre lo esperado según la clasificación manual y automática con los clasificadores precompilados se asume a que muchos tweets que tenían connotaciones negativas y que albergaban una crítica fuerte eran categorizados como positivos o neutrales cuando no mostraban o admiraban la vacuna.
 
-Finalmente, se propone ampliar el espectro de VADER para decidir que un tweet es neutral, pues la cantidad de tweets neutrales es muy grande. Esto se ha inentado abordar construyendo un clasificador que decidiera, según la polaridad de TextBlob y Vader, la polaridad del tweet, y se explica en la siguiente sección.
+Finalmente, se propone ampliar el espectro de VADER para decidir que un tweet es neutral, pues la cantidad de tweets neutrales es muy grande. Esto se ha intentado abordar construyendo un clasificador que decidiera, según la polaridad de TextBlob y Vader, la polaridad del tweet, y se explica en la siguiente sección.
 
 ### 5.3. Construcción de clasificadores
 
@@ -175,9 +175,11 @@ Se ha usado el objeto MinMaxScaler para elaborar este clasificador, pero no ha s
 
 #### 5.3.2. A partir del texto traducido en inglés
 
-Se ha creado un clasificador estudiando la frecuencia de las palabras con el dataset de las dos muestras traducidas al inglés (all_sample.csv). Este acercamiento se puede ver en los notebooks [english_classifier.ipynb] y [english_classifier2.ipynb](classifier/english_classifier.ipynb). En ambos casos se ha usado SVM porque daba los mejores resultados y se ha hecho un GridSearchCV para hallar los mejores parámetros.
+Se ha creado un clasificador estudiando la frecuencia de las palabras con el dataset de las dos muestras traducidas al inglés (all_sample.csv). Este acercamiento se puede ver en los notebooks [english_classifier.ipynb] y [english_classifier2.ipynb](classifier/english_classifier.ipynb). En el primer caso, se trata de un clasificador binario que tiene como objetivo diferenciar entre tweets neutrales e irrelevantes por un lado, y tweets positivos y negativos por el otro. Se ha optado por una clasificación binaria porque daba mejores resultados que la clasificación en cuatro clases (con las etiquetas originales) o la clasificación en tres clases (irrelevantes y neutrales juntos, positivos y negativos). En el segundo notebook, se ha tratado de aplicar el mismo clasificador pero utilizando solamente los tweets etiquetados como positivos y negativos.
 
-El desempeño en ambos casos no ha sido satisfactorio, ya que había un desequilibrio importante entre clases. Este problema no se ha logrado resolver a pesar de que se ha intentado aplicar la técnica de oversampling SMOTE, mediante la librería imblearn).
+En ambos casos se ha usado SVM porque daba los mejores resultados y se ha hecho un GridSearchCV para hallar los mejores parámetros.
+
+El desempeño en ambos casos no ha sido satisfactorio, ya que había un desequilibrio importante entre clases. Este problema no se ha logrado resolver a pesar de que se ha intentado aplicar la técnica de oversampling SMOTE, mediante la biblioteca imblearn.
 
 #### 5.3.3. A partir del texto original en español
 
