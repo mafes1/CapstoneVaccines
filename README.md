@@ -88,7 +88,7 @@ Se han usado visualizaciones basadas en el algoritmo t-SNE para comparar grupos 
 
 ## 4. Visualización de los datos y polaridad
 
-En este apartado se han estudiado la distribución de tweets por día. Se han cuantificado a modo de producción de tweets diaria, y después se les ha pasado un clasificador precompilado para intentar predecir su polaridad. Se han usado clasificadores precompilados que se han aplicado sobre la muestra traducida al inglés. Los clasificadores empleados son los que han dado mejor resultado según la última sección de este proyecto, y que se suelen usar para análisis de redes sociales:
+En este apartado se han estudiado la distribución de tweets por día. Se han cuantificado a modo de producción de tweets diaria, y después se les ha pasado un clasificador precompilado para intentar predecir su polaridad. Se han usado clasificadores preentrenados que se han aplicado sobre la muestra traducida al inglés. Los clasificadores empleados son los que han dado mejor resultado según la última sección de este proyecto, y que se suelen usar para análisis de redes sociales:
 - TextBlob
 - Vader
 
@@ -143,7 +143,7 @@ El tercero ha arrojado unos datos realmente malos y desbalanceados, por lo que s
 
 #### 5.2.1. Discusión
 
-En el script [comparing_textblob.ipynb](classifier/comparing_textblob.ipynb) se puede ver como TextBlob es mejor detectando tweets positivos (que tienen la etiqueta 2), y bastante malo detectando tweets negativos (que tienen la etiqueta 1). Así, solo fue capaz de identificar como negativos un 17% de los tweets negativos, pero un 50% de los tweets positivos fueron etiquetados correctamente. Es importante notar que tiene poca pretensión a categorizar cualquier tweet como negativo cuando se equivoca. Los suele categorizar como positivo o neutral. Según estos resultados, se puede ver cómo polariza los resultados hacia etiquetas positivas (sobre todo) y neutrales.
+En el script [comparing_textblob.ipynb](classifier/comparing_textblob.ipynb) se puede ver como TextBlob es mejor detectando tweets positivos (que tienen la etiqueta 2), y bastante malo detectando tweets negativos (que tienen la etiqueta 0). Así, solo fue capaz de identificar como negativos un 17% de los tweets negativos, pero un 50% de los tweets positivos fueron etiquetados correctamente. Es importante notar que tiene poca pretensión a categorizar cualquier tweet como negativo cuando se equivoca. Los suele categorizar como positivo o neutral. Según estos resultados, se puede ver cómo polariza los resultados hacia etiquetas positivas (sobre todo) y neutrales.
 
 Por otra parte, en el mismo script se puede ver que con VADER el clasificador funciona mejor en términos relativos. Es un poco más equilibrado pese a tener una menor accuracy (a causa de que predice peor los neutrales). En este caso, sigue predeciendo igual de bien los positivos pero cuando se equivoca lo hace de forma más equilibrada. Sí que es cierto que le cuesta más decir que un tweet es neutral, pero no es tan grave que con el caso de TextBlob. Para nuestro caso, se considera este clasificador más fiable por resultar más equilibrado, aunque sí que es cierto que sigue polarizando parcialmente la muestra hacia los dos extremos.
 
@@ -154,7 +154,7 @@ Una vez estudiados los dos clasificadores, se ha llegado a las siguientes conclu
 - Viendo las carencias de cada clasificador, se entiende por qué TextBlob detectaba pocas fluctuaciones en los tweets positivos (en mayor medida) y los neutrales y una subida menos perceptible que en el caso de VADER. En el caso de VADER, es entiende lo contrario: se predicen mejor los negativos aunque aún mejor los positivos. Sin embargo, tenderá a polarizar las muestras en positivos y negativos pues detecta bastante mal los neutrales.
 - Siguiendo a lo anterior, aunque VADER tiende a polarizar las muestras, parece que las polarizará más sobre lo positivo que lo negativo. Esto quiere decir que, según Vader, igual que con TextBlob, hay una tendencia a inflar más los tweets positivos, y, por lo tanto, este aumento del 10% se puede tener en cuenta como real.
 - El hecho que el clasificador de Textblob, que subestimaba los tweets negativos, haya detectado una subida de los tweets negativos aunque sea ligera, significa que esta percepción puede ser considerada como real.
-- Esta gran divergencia entre lo esperado según la clasificación manual y automática con los clasificadores precompilados se asume a que muchos tweets que tenían connotaciones negativas y que albergaban una crítica fuerte eran categorizados como positivos o neutrales cuando no mostraban o admiraban la vacuna.
+- Esta gran divergencia entre lo esperado según la clasificación manual y automática con los clasificadores preentrenados se asume a que muchos tweets que tenían connotaciones negativas y que albergaban una crítica fuerte eran categorizados como positivos o neutrales cuando no mostraban o admiraban la vacuna.
 
 Finalmente, se propone ampliar el espectro de VADER para decidir que un tweet es neutral, pues la cantidad de tweets neutrales es muy grande. Esto se ha intentado abordar construyendo un clasificador que decidiera, según la polaridad de TextBlob y Vader, la polaridad del tweet, y se explica en la siguiente sección.
 
