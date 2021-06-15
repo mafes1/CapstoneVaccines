@@ -8,7 +8,7 @@ Este proyecto es un análisis de sentimientos de las vacunas del Coronavirus en 
 4. Visualización de los datos y polaridad.
 5. Extracción de muestras y creación de un clasificador.
 
-La mayoría del codigo se ha migrado a notebooks para poder visualizar en línea los aspectos más importantes del proyecto, sin tener que ejecutar el código.
+La mayoría del código se ha migrado a notebooks para poder visualizar en línea los aspectos más importantes del proyecto, sin tener que ejecutar el código.
 
 ## 1. Scraping
 
@@ -23,7 +23,10 @@ La biblioteca para la extracción de tweets ha sido la _snscrape_. El script [sc
 
 En un principio, se intentaron extraer todos los tweets que contenieran la palabra _vacuna_ entre el 1 de agosto de 2020 y el 1 de mayo de 2021. Sin embargo, el script se volvía muy inestable y devolvía respuestas sin sentido (un número de tweets muy pequeño). Buscando tweets por menos días y varias veces, el problema parecía solucionarse, pero el número de tweets era demasiado grande como para poder iterar por períodos de tiempo de manera eficiente y después trabajar con ellos. Para solventar este problema, se hicieron pruebas manualmente con el buscador de Twitter avanzado desde el navegador, se identifico un parámetro que no estaba en la documentación de la biblioteca pero sí funcionó. De esta manera, como está en el script, se filtraron los tweets por número de _retweets_. Limitando el estudio, por una parte, a los tweets que circularon mínimamente y tuvieron un impacto relativo, pudiendo trabajar con un dataset no muy grande pero con un gran abanico de fechas.
 
-Se hicieron pruebas extrayendo datos en catalán, etc.
+Se hicieron pruebas extrayendo datos filtrando por lengua (catalán y castellano). Al extraer los datos en castellano se obtuvo una ingente cantidad de _tweets_ correspondientes a apenas unos días antes. Se descartó este criterio porque no permitía obtener una distribución equilibrada, ni siquiera combinándolo con filtros por fechas. Sin embargo, al extraer datos en catalán se obtuvo una cantidad mucho más manejable por mes que, remontándonos hasta agosto de 2020, llegó a alcanzar los 100000 _tweets_. El dataset original se redujo utlizando el script [reduce_translate.py].
+
+Finalmente, se optó por trabajar con el dataset de los 100 _retweets_, que es el que se ha utilizado para la extracción de las muestras.
+
 
 ## 2. Preprocesado y limpieza de los datos
 
@@ -31,13 +34,15 @@ Esta sección se ha dividido en dos tareas. Por una parte, la traducción de los
 
 ### 2.1. Traducción
 
-Como el volumen de tweets seguía siendo considerable, se ha empleado una herramienta que permitiera traducir los tweets de manera automatizada. Para ello, se contempló el uso de *google_trans*, pero este no funcionó adecuadamente y se tuvo que usar la herramienta *google_trans_new*. La dificultad en este apartado radicó en la lentitud del proceso, pues cualquier intento para acelerarlo provocó que la API de Google devolvería los tweets sin traducir. Hubo que buscar un compromiso entre esperar unos segundos entre petición y petición para evitar cualquier limitación de la API pero sin demorar mucho la traducción. La traducción se encuentra en el script [translate.py](preprocessing/translate.py).
+Como el volumen de tweets seguía siendo considerable, se ha empleado una herramienta que permitiera traducir los tweets de manera automatizada. Para ello, se contempló el uso de *google_trans*, pero este no funcionó adecuadamente y se tuvo que usar la herramienta *google_trans_new*. La dificultad en este apartado radicó en la lentitud del proceso, pues cualquier intento para acelerarlo provocó que la API de Google devolviera los tweets sin traducir. Hubo que buscar un compromiso entre esperar unos segundos entre petición y petición para evitar cualquier limitación de la API pero sin demorar mucho la traducción. La traducción se encuentra en el script [reduce_translate.py](preprocessing/translate.py).
 
 ### 2.2. Limpieza
 
 #### 2.2.1. En inglés
 
-La limpieza de los datos traducidos al inglés se encuentran en el script [clean_english.ipynb](preprocessing/clean_english.ipynb). En este caso, se han usado para crear el clasificador, del que se habla en la última sección de este documento.
+La limpieza de los datos traducidos al inglés se encuentra en el script [clean_english.ipynb](preprocessing/clean_english.ipynb). Este script se basa en el script [preprocessing_es_cat](preprocessing/preprocessing_es_cat.py), con la particularidad de que en este caso se ha optado por usar la librería SpaCy para lematizar el texto en inglés.
+
+Los datos traducidos al inglés se han usado para crear el clasificador, del que se habla en la última sección de este documento.
 
 #### 2.2.2. En castellano y catalán
 
@@ -60,7 +65,7 @@ Los puntos que se han seguido para la limpieza son los siguientes:
 
 El análisis exploratorio se divide en dos archivos:
 
-### 3.1. Características básicas
+### 3.1.1 Características básicas
 
 En este notebook se analizan las características del dataset recuperado por scraping.
 
@@ -69,6 +74,16 @@ En este notebook se analizan las características del dataset recuperado por scr
 En el notebook [words_unsupervised.ipynb](exploratory/words_unsupervised.ipynb) se han estudiado las palabras y bigramas más frecuentes de los tweets preprocesados. Se han obtenido los gráficos de la frecuencia de cada término.
 
 Para intentar una primera clasificación, se han intentado encontrar los tópicos de los tweets mediante LDA con la biblioteca gensim y más tarde en TruncatedSVD. Como este no era el objetivo del proyecto y exigía demasiado trabajo, en el notebook se plantea un código donde más adelante se podría trabajar más a fondo.
+
+### 3.2 Similaridad
+
+En el notebook [explore_similarities.ipynb](exploratory/explore_similarities.ipynb) se ha usado el package Word2Vec de la librería Gensim para explorar las relaciones semánticas entre las palabras. El archivo utlizado para entrenar el modelo es el dataset de los 100 _retweets_ traducido y limpio (vacunes_100rt_en_clean.csv). EL objetivo es observar asociaciones que se han aprendido a partir de los datos. Podemos encontrar:
+- Cuáles son las palabras más similares a una palabra concreta.
+- El grado de similaridad entre dos palabras.
+- Qué palabras sobran de entre un grupo de palabras.
+- A qué analogías dan lugar las asociaciones entre palabras.
+
+Se han usado visualizaciones basadas en el algoritmo t-SNE para comparar grupos de palabras similares y disimilares entre sí.
 
 ## 4. Visualización de los datos y polaridad
 
@@ -108,12 +123,13 @@ El notebook [visualizacion_vader.ipynb](visualization/visualizacion_vader.ipynb)
 ### 5.1. Extracción de las muestras
 
 El objetivo de este proyecto es realizar un análisis de sentimientos entorno a la vacuna. Sin embargo, este se quería enmarcar a la idea de un rechazo a la vacuna por miedo a efectos adversos o similar. Por esta razón, se han extraído dos muestras de mil tweets cada una en el script [generate_sample.py](data/samples/generate_sample.py) y se han etiquetado manualmente en cuatro categorías:
+
 - Positivo: si había, implícitamente o explícitamente, un apoyo o admiración a la vacuna a pesar que el tweet mostrara enfado hacia una tercer actor.
-- Negativo: si había, implícitamente o explícitamente, un rechazo o una muestra de miedo hacia la vacuna a pesar que el tweet mostrara cierta simpatía.
+- Negativo: si había, implícitamente o explícitamente, un rechazo o una muestra de miedo hacia la vacuna a pesar de que el tweet mostrara cierta simpatía.
 - Neutral: cuando la vacuna cobraba importancia en el tweet pero no se podía dilucidar si era positivo o negativo.
 - Irrelevante: cuando la vacuna dejaba de tener importancia en el tweet o no tenía nada que ver con el tema propuesto.
 
-Debido a la complejidad de dilucidar entre neutral e irrelevante, a la práctica se han incluido los irrelevantes dentro de los neutrales.
+Debido a la complejidad de distinguir entre neutral e irrelevante, a la práctica se han incluido los irrelevantes dentro de los neutrales.
 
 ### 5.2. Comparación con los clasificadores preentrenados
 
