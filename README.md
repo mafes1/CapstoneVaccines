@@ -8,7 +8,7 @@ Este proyecto es un análisis de sentimientos de las vacunas del Coronavirus en 
 4. Visualización de los datos y polaridad.
 5. Extracción de muestras y creación de un clasificador.
 
-La mayoría del código se ha migrado a notebooks para poder visualizar en línea los aspectos más importantes del proyecto, sin tener que ejecutar el código.
+La mayoría del código se ha migrado a notebooks para poder visualizar en línea los aspectos más importantes del proyecto, sin tener que ejecutar el código. Así, en este documento se hace referencia a partes concretas de él para poder seguir los contenidos del proyecto, así como ver los resultados y visualizaciones.
 
 ## 1. Scraping
 
@@ -25,7 +25,7 @@ En un principio, se intentaron extraer todos los tweets que contenieran la palab
 
 Se hicieron pruebas extrayendo datos filtrando por lengua (catalán y castellano). Al extraer los datos en castellano se obtuvo una ingente cantidad de _tweets_ correspondientes a apenas unos días antes. Se descartó este criterio porque no permitía obtener una distribución equilibrada, ni siquiera combinándolo con filtros por fechas. Sin embargo, al extraer datos en catalán se obtuvo una cantidad mucho más manejable por mes que, remontándonos hasta agosto de 2020, llegó a alcanzar los 100000 _tweets_. El dataset original se redujo utlizando el script [reduce_translate.py](preprocessing/reduce_translate.py).
 
-Finalmente, se optó por trabajar con el dataset de los 100 _retweets_, que es el que se ha utilizado para la extracción de las muestras.
+Finalmente, se optó por trabajar con el dataset de los 100 _retweets_, que es el que se ha utilizado para la extracción de las muestras. Finalmente, se ha extraído otra base de datos de tweets, estos solo en catalán, en el mismo periodo de tiempo, y que solo se usarán para realizar una visualización. Esta última base de datos está en el archivo [all_cat_reduced.csv](data/CAT/all_cat_reduced.csv).
 
 
 ## 2. Preprocesado y limpieza de los datos
@@ -119,6 +119,8 @@ Aplicando el mismo algoritmo a los tweets positivos y neutrales, en el primer ca
 
 El notebook [visualizacion_vader.ipynb](visualization/visualizacion_vader.ipynb) se ha seguido el mismo procedimiento pero empleando en éste el clasificador de VADER. Respecto el algoritmo de Estadística Bayesiana, se ha observado un aumento sobre la misma fecha (en este caso una semana antes) de un 10% de la proporción de tweets negativos. A este aumento de la media esperada de tweets negativos le va seguido, en la misma fecha, una caída de algo más del 5% de tweets positivos, y otro descenso del 5% de tweets neutrales.
 
+Como más adelante se demuestra que VADER es el clasificador que mejor ha funcionado, este último notebook se duplica con los datos del dataset en catalán, que se pueden ver en el script [visualizacion_cat_vader.ipynb](visualization/visualizacion_cat_vader.ipynb).
+
 ## 5. Extracción de las muestras y creación de un clasificador
 
 ### 5.1. Extracción de las muestras
@@ -136,7 +138,7 @@ Debido a la complejidad de distinguir entre neutral e irrelevante, a la práctic
 
 Se han comparado las etiquetas elaboradas manualmente con las devueltas por diferentes clasificadores en el script [comparing_textblob.ipynb](classifier/comparing_textblob.ipynb) y se ha elaborado para cada uno una matriz de confusión. Los clasificadores contemplados son:
 - TextBlob
-- Vader
+- VADER
 - Sentiment Analysis Spanish
 
 El tercero ha arrojado unos datos realmente malos y desbalanceados, por lo que se ha obviado en el resto de secciones. Los otros dos son bastante competitivos entre ellos. La manera de comprarlos ha sido mediante matrices de confusión normalizadas en el eje horizontal. De esta manera, se mira el porcentaje de tweets de cada polaridad reales que se aciertan. Mirar solamente la _accuracy_ en este caso sería insuficiente, pues, en las muestras, la mayoría de los tweets son neutrales y un fallo en los neutrales representaría una caída de la _accuracy_ considerable.
@@ -145,22 +147,22 @@ El tercero ha arrojado unos datos realmente malos y desbalanceados, por lo que s
 
 En el script [comparing_textblob.ipynb](classifier/comparing_textblob.ipynb) se puede ver como TextBlob es mejor detectando tweets positivos (que tienen la etiqueta 2), y bastante malo detectando tweets negativos (que tienen la etiqueta 0). Así, solo fue capaz de identificar como negativos un 17% de los tweets negativos, pero un 50% de los tweets positivos fueron etiquetados correctamente. Es importante notar que tiene poca pretensión a categorizar cualquier tweet como negativo cuando se equivoca. Los suele categorizar como positivo o neutral. Según estos resultados, se puede ver cómo polariza los resultados hacia etiquetas positivas (sobre todo) y neutrales.
 
-Por otra parte, en el mismo script se puede ver que con VADER el clasificador funciona mejor en términos relativos. Es un poco más equilibrado pese a tener una menor accuracy (a causa de que predice peor los neutrales). En este caso, sigue predeciendo igual de bien los positivos pero cuando se equivoca lo hace de forma más equilibrada. Sí que es cierto que le cuesta más decir que un tweet es neutral, pero no es tan grave que con el caso de TextBlob. Para nuestro caso, se considera este clasificador más fiable por resultar más equilibrado, aunque sí que es cierto que sigue polarizando parcialmente la muestra hacia los dos extremos.
+Por otra parte, en el mismo script se puede ver que con VADER el clasificador funciona mejor en términos relativos. Es un poco más equilibrado pese a tener una menor accuracy (a causa de que predice peor los neutrales). En este caso, sigue predeciendo igual de bien los positivos pero cuando se equivoca lo hace de forma más equilibrada. Sí que es cierto que le cuesta más decir que un tweet es neutral, pero no es tan grave como pasa con TextBlob. Para nuestro caso, se considera este clasificador más fiable por resultar más equilibrado, aunque sí que es cierto que sigue polarizando parcialmente la muestra hacia los dos extremos.
 
 Finalmente, se ha hecho la media aritmética de los dos clasificadores. El resultado no ha sido mejor que los anteriores, por lo que se desestima en esta discusión.
 
 Una vez estudiados los dos clasificadores, se ha llegado a las siguientes conclusiones:
-- Para este proyecto, se considera VADER como el mejor clasificador precompilado.
-- Viendo las carencias de cada clasificador, se entiende por qué TextBlob detectaba pocas fluctuaciones en los tweets positivos (en mayor medida) y los neutrales y una subida menos perceptible que en el caso de VADER. En el caso de VADER, es entiende lo contrario: se predicen mejor los negativos aunque aún mejor los positivos. Sin embargo, tenderá a polarizar las muestras en positivos y negativos pues detecta bastante mal los neutrales.
+- Para este proyecto, se considera VADER como el mejor clasificador preentrenado.
+- Viendo las carencias de cada clasificador, se entiende por qué TextBlob detectaba pocas fluctuaciones en los tweets positivos (en mayor medida) y los neutrales y una subida menos perceptible que en el caso de VADER. Con VADER, es entiende lo contrario: se predicen mejor los negativos aunque aún mejor los positivos. Sin embargo, tenderá a polarizar las muestras en positivos y negativos, pues detecta bastante mal los neutrales.
 - Siguiendo a lo anterior, aunque VADER tiende a polarizar las muestras, parece que las polarizará más sobre lo positivo que lo negativo. Esto quiere decir que, según Vader, igual que con TextBlob, hay una tendencia a inflar más los tweets positivos, y, por lo tanto, este aumento del 10% se puede tener en cuenta como real.
-- El hecho que el clasificador de Textblob, que subestimaba los tweets negativos, haya detectado una subida de los tweets negativos aunque sea ligera, significa que esta percepción puede ser considerada como real.
+- El hecho que el clasificador de Textblob, que subestimaba los tweets negativos, haya detectado una subida de los tweets negativos aunque sea ligera, también significa que esta percepción puede ser considerada como real.
 - Esta gran divergencia entre lo esperado según la clasificación manual y automática con los clasificadores preentrenados se asume a que muchos tweets que tenían connotaciones negativas y que albergaban una crítica fuerte eran categorizados como positivos o neutrales cuando no mostraban o admiraban la vacuna.
 
 Finalmente, se propone ampliar el espectro de VADER para decidir que un tweet es neutral, pues la cantidad de tweets neutrales es muy grande. Esto se ha intentado abordar construyendo un clasificador que decidiera, según la polaridad de TextBlob y Vader, la polaridad del tweet, y se explica en la siguiente sección.
 
 ### 5.3. Construcción de clasificadores
 
-Una vez visto las carencias de cada clasificador, se propone cerar un clasificador acorde con las necesidades de este proyecto. Se intentan abordar desde diferentes perspectivas.
+La última etapa del proyecto ha sido la construcción de un clasificador. Una vez visto las carencias de cada clasificador, se propone crear un clasificador acorde con las necesidades de este proyecto. Se intentan abordar desde diferentes perspectivas.
 
 #### 5.3.1. A partir de la salida de los clasificadores anteriores
 
@@ -175,7 +177,7 @@ Se ha usado el objeto MinMaxScaler para elaborar este clasificador, pero no ha s
 
 #### 5.3.2. A partir del texto traducido en inglés
 
-Se ha creado un clasificador estudiando la frecuencia de las palabras con el dataset de las dos muestras traducidas al inglés (all_sample.csv). Este acercamiento se puede ver en los notebooks [english_classifier.ipynb] y [english_classifier2.ipynb](classifier/english_classifier.ipynb). En el primer caso, se trata de un clasificador binario que tiene como objetivo diferenciar entre tweets neutrales e irrelevantes por un lado, y tweets positivos y negativos por el otro. Se ha optado por una clasificación binaria porque daba mejores resultados que la clasificación en cuatro clases (con las etiquetas originales) o la clasificación en tres clases (irrelevantes y neutrales juntos, positivos y negativos). En el segundo notebook, se ha tratado de aplicar el mismo clasificador pero utilizando solamente los tweets etiquetados como positivos y negativos.
+Se ha creado un clasificador estudiando la frecuencia de las palabras con el dataset de las dos muestras traducidas al inglés (all_sample.csv). Este acercamiento se puede ver en los notebooks [english_classifier.ipynb](classifier/english_classifier.ipynb) y [english_classifier2.ipynb](classifier/english_classifier2.ipynb). En el primer caso, se trata de un clasificador binario que tiene como objetivo diferenciar entre tweets neutrales e irrelevantes por un lado, y tweets positivos y negativos por el otro. Se ha optado por una clasificación binaria porque daba mejores resultados que la clasificación en cuatro clases (con las etiquetas originales) o la clasificación en tres clases (irrelevantes y neutrales juntos, positivos y negativos). En el segundo notebook, se ha tratado de aplicar el mismo clasificador pero utilizando solamente los tweets etiquetados como positivos y negativos.
 
 En ambos casos se ha usado SVM porque daba los mejores resultados y se ha hecho un GridSearchCV para hallar los mejores parámetros.
 
@@ -183,7 +185,7 @@ El desempeño en ambos casos no ha sido satisfactorio, ya que había un desequil
 
 #### 5.3.3. A partir del texto original en español
 
-Este clasificador ha sido una SVM por las mismas razones que el clasificador de la salida de los clasificadores preentrenados. Se ha intentado realizar de dos maneras, ambas en el script [spanish_classifier.ipynb](classifier/spanish_classifier.ipynb).
+Este clasificador ha sido una SVM por las mismas razones que el clasificador de la salida de los clasificadores preentrenados. Se ha intentado realizar de dos maneras, ambas en el script [spanish_classifier.ipynb](classifier/spanish_classifier.ipynb):
 
 ##### 5.3.3.1. Tres categorías
 
@@ -191,4 +193,8 @@ Primero se ha intentado realizar un clasificador con las tres categorías. Se ha
 
 #### 5.3.3.2. Dos clasificadores de dos categorías
 
-La manera de abordarlo fue creando un clasificador que fuera capaz de discernir entre neutrales (la clase mayoritaria) y positivos y negativos. Después, elaborar un clasificador solo para positivos y negativos que discerniera entre estos dos. El problema de este acercamiento ha sido el desbalanceo. Debido al gran volumen de tweets neutrales, una proporción relativamente pequeña de los tweets neutrales que se identifiquen erróneamente como con polaridad, se pasarían al segundo clasificador. Además, la precisión del clasificador no fue lo suficientemente satisfactoria.
+La manera de abordarlo fue creando un clasificador que fuera capaz de discernir entre neutrales (la clase mayoritaria) y positivos y negativos. Después, elaborar un clasificador solo para positivos y negativos que discerniera entre estos dos. El problema de este acercamiento ha sido el desbalanceo. Debido al gran volumen de tweets neutrales, una proporción relativamente pequeña de los tweets neutrales que se identifiquen erróneamente como positivos o negativos, pasarían al segundo clasificador, en el que entrarían más tweets neutrales que positivos y negativos. Además, la precisión del clasificador no fue lo suficientemente satisfactoria.
+
+
+Anna Senent Juliá
+Martí Fernández Saboya
