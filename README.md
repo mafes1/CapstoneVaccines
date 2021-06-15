@@ -10,7 +10,7 @@ Este proyecto es un análisis de sentimientos de las vacunas del Coronavirus en 
 
 La mayoría del código se ha migrado a notebooks para poder visualizar en línea los aspectos más importantes del proyecto, sin tener que ejecutar el código. Así, en este documento se hace referencia a partes concretas de él para poder seguir los contenidos del proyecto, así como para ver los resultados y visualizaciones.
 
-**Nota:** si se ejecuta parte del código, el directorio de trabajo puede no ser de entrada el correcto, por lo que habría que cambiar el directorio de trabajo a la carpeta principal del proyecto, o corregir las direcciones.
+**Nota:** si se ejecuta código o parte de el, el directorio de trabajo puede no ser de entrada el correcto, por lo que habría que cambiar el directorio de trabajo a la carpeta principal del proyecto, o corregir las direcciones.
 
 ## 1. Scraping
 
