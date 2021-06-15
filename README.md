@@ -77,7 +77,8 @@ Para intentar una primera clasificación, se han intentado encontrar los tópico
 
 ### 3.2 Similaridad
 
-En el notebook [explore_similarities.ipynb](exploratory/explore_similarities.ipynb) se ha usado el package Word2Vec de la librería Gensim para explorar las relaciones semánticas entre las palabras. El archivo utlizado para entrenar el modelo es el dataset de los 100 _retweets_ traducido y limpio (vacunes_100rt_en_clean.csv). EL objetivo es observar asociaciones que se han aprendido a partir de los datos. Podemos encontrar:
+En el notebook [explore_similarities.ipynb](exploratory/explore_similarities.ipynb) se ha usado el package Word2Vec de la librería Gensim para explorar las relaciones semánticas entre las palabras. El archivo utilizado para entrenar el modelo es el dataset de los 100 _retweets_ traducido y limpio (vacunes_100rt_en_clean.csv). El objetivo es observar asociaciones que se han aprendido a partir de los datos. Podemos encontrar:
+
 - Cuáles son las palabras más similares a una palabra concreta.
 - El grado de similaridad entre dos palabras.
 - Qué palabras sobran de entre un grupo de palabras.
@@ -87,7 +88,7 @@ Se han usado visualizaciones basadas en el algoritmo t-SNE para comparar grupos 
 
 ## 4. Visualización de los datos y polaridad
 
-En este apartado se han estudiado la distribución de tweets por día. Se han cuantificado a modo de producción de tweets diaria, y después se les ha pasado un clasificador precompilado para intentar predecir su polaridad. Se han usado clasificadores precompilados, que se han aplicado sobre la muestra traducida al inglés. Los clasificadores empleados son los que han dado mejor resultado según la última sección de este proyecto, y que se suelen usar para análisis de redes sociales:
+En este apartado se han estudiado la distribución de tweets por día. Se han cuantificado a modo de producción de tweets diaria, y después se les ha pasado un clasificador precompilado para intentar predecir su polaridad. Se han usado clasificadores precompilados que se han aplicado sobre la muestra traducida al inglés. Los clasificadores empleados son los que han dado mejor resultado según la última sección de este proyecto, y que se suelen usar para análisis de redes sociales:
 - TextBlob
 - Vader
 
@@ -174,13 +175,16 @@ Se ha usado el objeto MinMaxScaler para elaborar este clasificador, pero no ha s
 
 #### 5.3.2. A partir del texto traducido en inglés
 
-Se ha creado un clasificador estudiando la frecuencia de las palabras con la base de datos traducida al inglés. Este acercamiento se puede ver en el notebook [english_classifier.ipynb](classifier/english_classifier.ipynb)
+Se ha creado un clasificador estudiando la frecuencia de las palabras con el dataset de las dos muestras traducidas al inglés (all_sample.csv). Este acercamiento se puede ver en los notebooks [english_classifier.ipynb] y [english_classifier2.ipynb](classifier/english_classifier.ipynb). En ambos casos se ha usado SVM porque daba los mejores resultados y se ha hecho un GridSearchCV para hallar los mejores parámetros.
+
+El desempeño en ambos casos no ha sido satisfactorio, ya que había un desequilibrio importante entre clases. Este problema no se ha logrado resolver a pesar de que se ha intentado aplicar la técnica de oversampling SMOTE, mediante la librería imblearn).
 
 #### 5.3.3. A partir del texto original en español
 
 Este clasificador ha sido una SVM por las mismas razones que el clasificador de la salida de los clasificadores preentrenados. Se ha intentado realizar de dos maneras, ambas en el script [spanish_classifier.ipynb](classifier/spanish_classifier.ipynb).
 
 ##### 5.3.3.1. Tres categorías
+
 Primero se ha intentado realizar un clasificador con las tres categorías. Se ha relizado una Cross Validation y se han buscado los mejores parámetros. Cuando se ha aplicado el clasificador entrenado con los datos _training_ a _test_, se ha visto que no se cumplía lo observado en _Validation_ y resultaba completamente desbalanceado.
 
 #### 5.3.3.2. Dos clasificadores de dos categorías
