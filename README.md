@@ -34,7 +34,7 @@ Esta sección se ha dividido en dos tareas. Por una parte, la traducción de los
 
 ### 2.1. Traducción
 
-Como el volumen de tweets seguía siendo considerable, se ha empleado una herramienta que permitiera traducir los tweets de manera automatizada. Para ello, se contempló el uso de *google_trans*, pero este no funcionó adecuadamente y se tuvo que usar la herramienta *google_trans_new*. La dificultad en este apartado radicó en la lentitud del proceso, pues cualquier intento para acelerarlo provocó que la API de Google devolviera los tweets sin traducir. Hubo que buscar un compromiso entre esperar unos segundos entre petición y petición para evitar cualquier limitación de la API pero sin demorar mucho la traducción. La traducción se encuentra en el script [reduce_translate.py](preprocessing/translate.py).
+Como el volumen de tweets seguía siendo considerable, se ha empleado una herramienta que permitiera traducir los tweets de manera automatizada. Para ello, se contempló el uso de *google_trans*, pero este no funcionó adecuadamente y se tuvo que usar la herramienta *google_trans_new*. La dificultad en este apartado radicó en la lentitud del proceso, pues cualquier intento para acelerarlo provocó que la API de Google devolviera los tweets sin traducir. Hubo que buscar un compromiso entre esperar unos segundos entre petición y petición para evitar cualquier limitación de la API pero sin demorar mucho la traducción. La código utilizado para traducir tanto el dataset de los 100 _retweets_ como el dataset en catalán se encuentra en el script [reduce_translate.py](preprocessing/translate.py).
 
 ### 2.2. Limpieza
 
