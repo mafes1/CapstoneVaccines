@@ -8,6 +8,8 @@ Este proyecto es un análisis de sentimientos de las vacunas del Coronavirus en 
 4. Visualización de los datos.
 5. Comparación y creación de un clasificador.
 
+La mayoría del codigo se ha migrado a notebooks para poder visualizar en línea los aspectos más importantes del proyecto, sin tener que ejecutar el código.
+
 ## 1. Scraping
 
 Para la recuperación de los datos se ha hecho uso de la biblioteca _snscrape_. La dificultad en este apartado radica en la dificultad para encontrar la herramienta adecuada.
@@ -54,3 +56,15 @@ Los puntos que se han seguido para la limpieza son los siguientes:
 - Se han sustituido todos los espacios y saltos de línea y tabulaciones por un espacio simple.
 
 ## 3. Análisis exploratorio
+
+El análisis exploratorio se divide en dos archivos:
+
+### 3.1.
+
+### 3.1.2. Nubes de palabras y aprendizaje no supervisado
+
+En el notebook [words_unsupervised.ipynb](exploratory/words_unsupervised.ipynb) se han estudiado las palabras y bigramas más frecuentes de los tweets preprocesados. Se han obtenido los gráficos de la frecuencia de cada término.
+
+Para intentar una primera clasificación, se han intentado encontrar los tópicos de los tweets mediante LDA con la biblioteca gensim y más tarde en TruncatedSVD. Como este no era el objetivo del proyecto y exigía demasiado trabajo, en el notebook se plantea un código donde más adelante se podría trabajar más a fondo.
+
+
