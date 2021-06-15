@@ -67,7 +67,7 @@ El análisis exploratorio se divide en dos archivos:
 
 ### 3.1.1 Características básicas
 
-En este notebook se analizan las características del dataset recuperado por scraping.
+En el notebookk [exploratory.ipynb](exploratory/exploratory.ipynb) se analizan las características del dataset recuperado por scraping.
 
 ### 3.1.2. Nubes de palabras y aprendizaje no supervisado
 
